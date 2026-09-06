@@ -8,6 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -17,12 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
-
-
-
-
-
+import javax.swing.JOptionPane;
 
 public class RoundRobinGUI {
 	
@@ -62,14 +62,25 @@ public class RoundRobinGUI {
 		//Création d'une fenetre JFrame pour la saisie des données
 		JFrame frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(128, 0, 128));
-		JTable table = new JTable();		//Creation du tableau
-
-		Object[] columns = {"Process","Arrival Time","Execute Time"};
-		DefaultTableModel model = new DefaultTableModel(new String[]{"Process", "Arrival time", "Execute time"}, 0); 
+		
+		JTable table = new JTable();		
+		
+		//Creation du tableau
+		Object[] columns = {
+			"Process",
+			"Arrival Time",
+			"Execute Time"
+		};
+		
+		DefaultTableModel model = new DefaultTableModel(
+			new String[]{"Process", "Arrival time", "Execute time"}, 0
+		); 
+		
 		model.setColumnIdentifiers(columns);
 		table.setModel(model);
-		table.setBackground(Color.pink);
-		table.setForeground(Color.white);
+		
+		table.setBackground(Color.PINK);
+		table.setForeground(Color.BLACK);
 		Font font = new Font("",1,22);
 		table.setFont(font);
 		table.setRowHeight(30);
