@@ -1,422 +1,635 @@
 package exercice;
 
-
-import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JOptionPane;
+import javax.swing.border.EmptyBorder;
+
 
 public class RoundRobinGUI {
-	
-	private JFrame frame;
-	private JTextField textField;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					RoundRobinGUI window = new RoundRobinGUI();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	
-	
-	/**
-	 * Create the application.
-	 */
-	public RoundRobinGUI() {
-		initialize();
-	}
+    private JFrame frame;
+    private JTextField textField;
+    private JTable table;
+    private JTextField textField_1;
+    private JTextField textField_2;
+    private JTextField textField_3;
+    private JTextField textField_4;
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		
-		//Création d'une fenetre JFrame pour la saisie des données
-		JFrame frame = new JFrame();
-		frame.getContentPane().setBackground(new Color(128, 0, 128));
-		
-		JTable table = new JTable();		
-		
-		//Creation du tableau
-		Object[] columns = {
-			"Process",
-			"Arrival Time",
-			"Execute Time"
-		};
-		
-		DefaultTableModel model = new DefaultTableModel(
-			new String[]{"Process", "Arrival time", "Execute time"}, 0
-		); 
-		
-		model.setColumnIdentifiers(columns);
-		table.setModel(model);
-		
-		table.setBackground(Color.PINK);
-		table.setForeground(Color.BLACK);
-		Font font = new Font("",1,22);
-		table.setFont(font);
-		table.setRowHeight(30);
-		//TextField pour saisir les données
-		JTextField textProcess = new JTextField();
-		textProcess.setBackground(Color.PINK);
-		JTextField textAtime = new JTextField();
-		textAtime.setBackground(Color.PINK);
-		JTextField textEtime = new JTextField();
-		textEtime.setBackground(Color.PINK);
-		
-		JTextField textQuantum = new JTextField();
-		textQuantum.setBackground(Color.PINK);
-		JTextField textProcessnb = new JTextField();
-		textProcessnb.setBackground(Color.PINK);
-		
-		
-		
-		
-		//Création des bouttons ADD et Execute
-		
-		JButton btnAdd = new JButton("ADD");
-		JButton btnExecute = new JButton("Execute");
-		btnExecute.setBackground(Color.PINK);
-		
-		//Le boutton Execute sert à exécuter le programme et afficher le résultat
-		btnExecute.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			
-				//Création d'une nouvelle fenêtre JFrame pour l'affichage du résultat
-				JFrame framen = new JFrame();
-				framen.getContentPane().setBackground(new Color(128, 0, 128));
-				framen.setTitle("CPU Scheduling Round Robin Gantt Chart");
-				
-				
-				
-				JPanel panel = new JPanel();
-				panel.setBounds(18, 284, 632, 88);
-				framen.getContentPane().add(panel);
-				panel.setBackground(new Color(128, 0, 128));
-				
-				int btime[],rtime[],atime[];
-				
-				btime = new int[10]; //Création du tableau temps d'exécution
-				rtime = new int[10]; //Création du tableau temps restant
-				atime = new int[10]; //Création du tableau temps d'arrivée
-				
-				//nbp représente le nombre de processus
-				int nbp = Integer.parseInt(textProcessnb.getText()) ;
-				
-				//Temps d'arrivée
-				for(int i=0;i<nbp ;i++)
-				{
-					atime[i] = Integer.parseInt((String) model.getValueAt(i, 1));
-				}
-				
-				//Temps d'exécution
-				for(int i=0;i<nbp;i++)
-				{
-					btime[i] = Integer.parseInt((String) model.getValueAt(i, 2));
-					rtime[i] = btime[i];
-					
-				}
-				
-				
-				//q représente le quantum de temps
-				int q = Integer.parseInt(textQuantum.getText());
-				
-				//Calcul du temps d'exécution total
-				int btsum = 0;
-				for(int i=0;i< table.getRowCount();i++)
-				{
-					btsum = btsum + Integer.parseInt(table.getValueAt(i,2).toString());
-				}
-				
-				textField.setText(Integer.toString(btsum));
-				
-				
-				
-				//rp représente le nombre de processus restant
-				int rp = nbp; 
-				int time = 0;
-				
-				
-				
-				for(int i=0;i<nbp;i++)
-				{
-					{while(rp!=0)  //Tant qu'il reste des processus à exécuter
-					{if(atime[i] <= time) 
 
-							if(rtime[i] > q )
-							{
-								JTextArea textArea1 = new JTextArea();
-								textArea1.setText((q) +" unités | \t \n");
-								textArea1.setBackground(Color.PINK);
-								textArea1.setEditable(false);
-								textArea1.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 20));
-								panel.add(textArea1);
-								rtime[i] = rtime[i] - q;
-								JTextArea textArea2 = new JTextArea();
-								textArea2.setText("P" + (i)+  "\n");
-								textArea2.setBackground(Color.PINK);
-								textArea2.setEditable(false);
-								textArea2.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 20));
-								panel.add(textArea2);
-								time+=q;
-								JTextArea textArea3 = new JTextArea();
-								textArea3.setText("\n" + (time));
-								textArea3.setBackground(Color.PINK);
-								textArea3.setEditable(false);
-								textArea3.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 20));
-								panel.add(textArea3);
-							}
-							else if (rtime[i] <= q && rtime[i]>0)
-							{
-								
-								time+=rtime[i];
-								JTextArea textArea1 = new JTextArea();
-								textArea1.setText((rtime[i]) + "unités | \t \n");
-								textArea1.setBackground(Color.PINK);
-								textArea1.setEditable(false);
-								textArea1.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 20));
-								panel.add(textArea1);
-								
-								rtime[i] = rtime[i] - rtime[i];
-								JTextArea textArea2 = new JTextArea();
-								textArea2.setText("P" + (i));
-								textArea2.setBackground(Color.PINK);
-								textArea2.setEditable(false);
-								textArea2.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 20));
-								panel.add(textArea2);
-								
-								rp --; 
-								JTextArea textArea4 = new JTextArea();
-								textArea4.setText("Fin de P" +(i));
-								textArea4.setBackground(Color.PINK);
-								textArea4.setEditable(false);
-								textArea4.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 20));
-								panel.add(textArea4);
-								
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    RoundRobinGUI window = new RoundRobinGUI();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-								JTextArea textArea3 = new JTextArea();
-								textArea3.setText("\n" + (time));
-								textArea3.setBackground(Color.PINK);
-								textArea3.setEditable(false);
-								textArea3.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 20));
-								panel.add(textArea3);
-								
-							}
-						
-						i++;
-						
-					if(i==nbp)
-					{
-						i=0;
-					}
-					}
-				}
-				}
-				
-				
-				framen.setSize(1200, 200);
-				framen.setLocationRelativeTo(null);
-				framen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				framen.setVisible(true);
-			}
-	
-		});
-			
-		
-		 
-		 
-		//Création des bouttons Delete et Update
-		
-		JButton btnDelete = new JButton("Delete");
-		JButton btnUpdate = new JButton("Update");
-		
-		
-		
-		
-		textProcess.setBounds(156, 65, 100, 25);
-		textAtime.setBounds(156, 102, 100, 25);
-		textEtime.setBounds(156, 139, 100, 25);
-		textQuantum.setBounds(156,176,100,25);
-		textProcessnb.setBounds(156,213,100,25);
-		
-		
-		btnAdd.setBounds(281, 67, 100, 25);
-		btnExecute.setBounds(673, 335, 110, 25);
-		btnDelete.setBounds(281, 141, 100, 25);
-		btnUpdate.setBounds(281, 104, 100, 25);
-		
-		
-		JScrollPane pane = new JScrollPane(table);
-		pane.setBounds(441, 6, 439, 194);
-		
-		frame.getContentPane().setLayout(null);
-		frame.getContentPane().add(pane);
-		frame.getContentPane().add(textProcess);
-		frame.getContentPane().add(textAtime);
-		frame.getContentPane().add(textEtime);
-		frame.getContentPane().add(textQuantum);
-		frame.getContentPane().add(textProcessnb);
-		frame.getContentPane().add(btnAdd);
-		frame.getContentPane().add(btnExecute);
-		frame.getContentPane().add(btnUpdate);
-		frame.getContentPane().add(btnDelete);
-	
-		
-		JLabel lblNewLabel = new JLabel("Process ID");
-		lblNewLabel.setBounds(20, 70, 100, 16);
-		frame.getContentPane().add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Arrival time");
-		lblNewLabel_1.setBounds(20, 107, 100, 16);
-		frame.getContentPane().add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_2 = new JLabel("Execute time");
-		lblNewLabel_2.setBounds(20, 144, 88, 16);
-		frame.getContentPane().add(lblNewLabel_2);
-		
-		JLabel lblNewLabel_3 = new JLabel("Round Robin");
-		lblNewLabel_3.setForeground(Color.PINK);
-		lblNewLabel_3.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 24));
-		lblNewLabel_3.setBackground(Color.PINK);
-		lblNewLabel_3.setBounds(15, 18, 203, 35);
-		frame.getContentPane().add(lblNewLabel_3);
-		
-		JLabel lblNewLabel_4 = new JLabel("Quantum");
-		lblNewLabel_4.setBounds(20, 181, 61, 16);
-		frame.getContentPane().add(lblNewLabel_4);
-		
-		JLabel lblNewLabel_5 = new JLabel("Process number");
-		lblNewLabel_5.setBounds(20, 218, 100, 16);
-		frame.getContentPane().add(lblNewLabel_5);
-		
-		//Le boutton EXIT sert à quitter la fenêtre
-		JButton btnNewButton = new JButton("EXIT");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
-		btnNewButton.setBackground(Color.PINK);
-		btnNewButton.setBounds(777, 333, 103, 29);
-		frame.getContentPane().add(btnNewButton);
-		
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setBackground(Color.PINK);
-		textField.setBounds(166, 250, 110, 26);
-		frame.getContentPane().add(textField);
-		textField.setColumns(10);
-		
-		JLabel lblNewLabel_6 = new JLabel("Total execution time");
-		lblNewLabel_6.setBounds(20, 256, 153, 16);
-		frame.getContentPane().add(lblNewLabel_6);
-		
-		lblNewLabel_7.setFont(new Font("Microsoft Sans Serif", Font.PLAIN, 20));
-		lblNewLabel_7.setForeground(Color.PINK);
-		lblNewLabel_7.setBounds(15, 356, 105, 16);
-		frame.getContentPane().add(lblNewLabel_7);
-		
-		
-		
-		Object[] row = new Object[3];
-		//Le boutton ADD sert à ajouter de nouveaux processus 
-		btnAdd.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				row[0] = textProcess.getText();
-				row[1] = textAtime.getText();
-				row[2] = textEtime.getText();
-				
-				model.addRow(row);
-				
-				
-			}});
-		
-		//Le boutton Delete sert à supprimer une ligne seléctionnée dans le tableau
-		btnDelete.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int i = table.getSelectedRow();
-				if(i >= 0) {
-					model.removeRow(i);
-				}
-				else {
-					System.out.println("Delete Error");
-				}
-				
-				
-			}});
-		
-		table.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				int i = table.getSelectedRow();
-				textProcess.setText(model.getValueAt(i, 0).toString());
-				textAtime.setText(model.getValueAt(i, 1).toString());
-				textEtime.setText(model.getValueAt(i, 2).toString());
-				
-			}
-		});
-		
-		
-		//Le boutton Update sert à mettre à jour une ligne sélectionnée dans le tableau
-		btnUpdate.addActionListener(new ActionListener( ) {
+    /**
+     * Create the application.
+     */
+    public RoundRobinGUI() {
+        initialize();
+    }
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				int i = table.getSelectedRow();
-				if(i >= 0)
-				{
-					model.setValueAt(textProcess.getText(), i, 0);
-					model.setValueAt(textAtime.getText(), i, 1);
-					model.setValueAt(textEtime.getText(), i, 2);
-				}
-				else {
-					System.out.println("Update Error");
-				}
-				
-				
-				
-			}});
-		
-		
-		
-		frame.setSize(900, 400);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
+
+    /**
+     * Initialize the contents of the frame.
+     */
+    private void initialize() {
+
+        // Create the main application window
+        frame = new JFrame();
+        frame.setBounds(100, 100, 900, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+
+
+        // Create the table model
+        DefaultTableModel model = new DefaultTableModel();
+
+        model.addColumn("Process");
+        model.addColumn("Arrival Time");
+        model.addColumn("Execute Time");
+
+
+        // Create the process table
+        table = new JTable(model);
+        table.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        table.setRowHeight(25);
+
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(30, 30, 400, 180);
+        frame.getContentPane().add(scrollPane);
+
+
+        // Process label
+        JLabel lblProcess = new JLabel("Process");
+        lblProcess.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblProcess.setBounds(470, 30, 100, 25);
+        frame.getContentPane().add(lblProcess);
+
+
+        // Process text field
+        textField = new JTextField();
+        textField.setBounds(570, 30, 150, 25);
+        frame.getContentPane().add(textField);
+        textField.setColumns(10);
+
+
+        // Arrival time label
+        JLabel lblArrivalTime = new JLabel("Arrival Time");
+        lblArrivalTime.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblArrivalTime.setBounds(470, 70, 100, 25);
+        frame.getContentPane().add(lblArrivalTime);
+
+
+        // Arrival time text field
+        textField_1 = new JTextField();
+        textField_1.setBounds(570, 70, 150, 25);
+        frame.getContentPane().add(textField_1);
+        textField_1.setColumns(10);
+
+
+        // Execute time label
+        JLabel lblExecuteTime = new JLabel("Execute Time");
+        lblExecuteTime.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblExecuteTime.setBounds(470, 110, 100, 25);
+        frame.getContentPane().add(lblExecuteTime);
+
+
+        // Execute time text field
+        textField_2 = new JTextField();
+        textField_2.setBounds(570, 110, 150, 25);
+        frame.getContentPane().add(textField_2);
+        textField_2.setColumns(10);
+
+
+        // Quantum label
+        JLabel lblQuantum = new JLabel("Quantum");
+        lblQuantum.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblQuantum.setBounds(470, 150, 100, 25);
+        frame.getContentPane().add(lblQuantum);
+
+
+        // Quantum text field
+        textField_3 = new JTextField();
+        textField_3.setBounds(570, 150, 150, 25);
+        frame.getContentPane().add(textField_3);
+        textField_3.setColumns(10);
+
+
+        // Number of processes label
+        JLabel lblNumberOfProcesses = new JLabel("Process Number");
+        lblNumberOfProcesses.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblNumberOfProcesses.setBounds(470, 190, 100, 25);
+        frame.getContentPane().add(lblNumberOfProcesses);
+
+
+        // Number of processes text field
+        textField_4 = new JTextField();
+        textField_4.setBounds(570, 190, 150, 25);
+        frame.getContentPane().add(textField_4);
+        textField_4.setColumns(10);
+
+
+        // ADD button
+        JButton btnAdd = new JButton("ADD");
+        btnAdd.setBounds(30, 230, 90, 30);
+        frame.getContentPane().add(btnAdd);
+
+
+        btnAdd.addActionListener(e -> {
+
+            // Check that all required fields are filled
+            if (textField.getText().trim().isEmpty()
+                    || textField_1.getText().trim().isEmpty()
+                    || textField_2.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Please fill in all process information."
+                );
+                return;
+            }
+
+            try {
+
+                // Validate that arrival and execution times are numbers
+                int arrivalTime = Integer.parseInt(textField_1.getText().trim());
+                int executeTime = Integer.parseInt(textField_2.getText().trim());
+
+                if (arrivalTime < 0 || executeTime <= 0) {
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Arrival time must be >= 0 and execute time must be > 0."
+                    );
+                    return;
+                }
+
+                // Add the process information to the table
+                model.addRow(new Object[]{
+                        textField.getText().trim(),
+                        arrivalTime,
+                        executeTime
+                });
+
+                // Clear the input fields
+                textField.setText("");
+                textField_1.setText("");
+                textField_2.setText("");
+
+            } catch (NumberFormatException ex) {
+
+                // Display an error when the user enters invalid numbers
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Arrival Time and Execute Time must be numbers."
+                );
+            }
+        });
+
+
+        // DELETE button
+        JButton btnDelete = new JButton("Delete");
+        btnDelete.setBounds(130, 230, 90, 30);
+        frame.getContentPane().add(btnDelete);
+
+
+        btnDelete.addActionListener(e -> {
+
+            // Get the selected row
+            int selectedRow = table.getSelectedRow();
+
+            if (selectedRow == -1) {
+
+                // Ask the user to select a process
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Please select a process to delete."
+                );
+
+            } else {
+
+                // Delete the selected process
+                model.removeRow(selectedRow);
+            }
+        });
+
+
+        // UPDATE button
+        JButton btnUpdate = new JButton("Update");
+        btnUpdate.setBounds(230, 230, 90, 30);
+        frame.getContentPane().add(btnUpdate);
+
+
+        btnUpdate.addActionListener(e -> {
+
+            // Get the selected row
+            int selectedRow = table.getSelectedRow();
+
+            if (selectedRow == -1) {
+
+                // Ask the user to select a process
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Please select a process to update."
+                );
+                return;
+            }
+
+            try {
+
+                // Validate the arrival and execution times
+                int arrivalTime = Integer.parseInt(textField_1.getText().trim());
+                int executeTime = Integer.parseInt(textField_2.getText().trim());
+
+                if (arrivalTime < 0 || executeTime <= 0) {
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Arrival time must be >= 0 and execute time must be > 0."
+                    );
+                    return;
+                }
+
+                // Update the selected process
+                model.setValueAt(textField.getText().trim(), selectedRow, 0);
+                model.setValueAt(arrivalTime, selectedRow, 1);
+                model.setValueAt(executeTime, selectedRow, 2);
+
+                // Clear the input fields
+                textField.setText("");
+                textField_1.setText("");
+                textField_2.setText("");
+
+            } catch (NumberFormatException ex) {
+
+                // Display an error when invalid numbers are entered
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Arrival Time and Execute Time must be numbers."
+                );
+            }
+        });
+
+
+        // EXIT button
+        JButton btnExit = new JButton("EXIT");
+        btnExit.setBounds(330, 230, 90, 30);
+        frame.getContentPane().add(btnExit);
+
+
+        btnExit.addActionListener(e -> {
+
+            // Close the main application
+            System.exit(0);
+        });
+
+
+        // Execute button
+        JButton btnExecute = new JButton("Execute");
+        btnExecute.setBounds(570, 230, 150, 30);
+        frame.getContentPane().add(btnExecute);
+
+
+        btnExecute.addActionListener(e -> {
+
+            // Check that the table contains at least one process
+            if (model.getRowCount() == 0) {
+
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Please add at least one process."
+                );
+                return;
+            }
+
+
+            int quantum;
+
+            try {
+
+                // Read and validate the quantum value
+                quantum = Integer.parseInt(textField_3.getText().trim());
+
+                if (quantum <= 0) {
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Quantum must be greater than 0."
+                    );
+                    return;
+                }
+
+            } catch (NumberFormatException ex) {
+
+                // Display an error when the quantum is invalid
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Quantum must be a valid number."
+                );
+                return;
+            }
+
+
+            int nbp;
+
+            try {
+
+                // Read the number of processes
+                nbp = Integer.parseInt(textField_4.getText().trim());
+
+                if (nbp <= 0 || nbp > model.getRowCount()) {
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Invalid number of processes."
+                    );
+                    return;
+                }
+
+            } catch (NumberFormatException ex) {
+
+                // Display an error when the process number is invalid
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "Process Number must be a valid number."
+                );
+                return;
+            }
+
+
+            // Arrays used for the Round Robin algorithm
+            int[] btime = new int[nbp];
+            int[] rtime = new int[nbp];
+            int[] atime = new int[nbp];
+
+
+            // Store the process information from the table
+            for (int i = 0; i < nbp; i++) {
+
+                try {
+
+                    atime[i] = Integer.parseInt(
+                            model.getValueAt(i, 1).toString()
+                    );
+
+                    btime[i] = Integer.parseInt(
+                            model.getValueAt(i, 2).toString()
+                    );
+
+                    rtime[i] = btime[i];
+
+                } catch (NumberFormatException ex) {
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Invalid process information in the table."
+                    );
+                    return;
+                }
+            }
+
+
+            // Create the result window
+            JFrame resultFrame = new JFrame(
+                    "CPU Scheduling Round Robin Gantt Chart"
+            );
+
+            resultFrame.setBounds(150, 150, 800, 500);
+            resultFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
+            JPanel panel = new JPanel();
+            panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            panel.setLayout(null);
+
+
+            // Create a text area to display the Gantt chart
+            JTextArea resultArea = new JTextArea();
+            resultArea.setEditable(false);
+            resultArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+
+            JScrollPane resultScrollPane = new JScrollPane(resultArea);
+            resultScrollPane.setBounds(20, 20, 740, 400);
+            panel.add(resultScrollPane);
+
+
+            resultFrame.getContentPane().add(panel);
+
+
+            /*
+             * Round Robin scheduling algorithm
+             */
+
+            // Create the ready queue
+            Queue<Integer> readyQueue = new LinkedList<Integer>();
+
+
+            // Keep track of processes that have already entered the queue
+            boolean[] added = new boolean[nbp];
+
+
+            // Keep track of the number of completed processes
+            int completedProcesses = 0;
+
+
+            // Current CPU time
+            int time = 0;
+
+
+            // Build the Gantt chart output
+            StringBuilder output = new StringBuilder();
+
+            output.append("ROUND ROBIN GANTT CHART\n");
+            output.append("=======================\n\n");
+
+
+            while (completedProcesses < nbp) {
+
+                /*
+                 * Add all processes that have arrived
+                 * before or at the current CPU time.
+                 */
+                for (int i = 0; i < nbp; i++) {
+
+                    if (!added[i]
+                            && atime[i] <= time
+                            && rtime[i] > 0) {
+
+                        readyQueue.add(i);
+                        added[i] = true;
+                    }
+                }
+
+
+                /*
+                 * If the ready queue is empty,
+                 * move the CPU time to the next arriving process.
+                 */
+                if (readyQueue.isEmpty()) {
+
+                    int nextArrival = Integer.MAX_VALUE;
+
+                    for (int i = 0; i < nbp; i++) {
+
+                        if (rtime[i] > 0 && atime[i] < nextArrival) {
+                            nextArrival = atime[i];
+                        }
+                    }
+
+                    if (nextArrival != Integer.MAX_VALUE) {
+
+                        output.append(
+                                "CPU Idle: "
+                                        + time
+                                        + " -> "
+                                        + nextArrival
+                                        + "\n"
+                        );
+
+                        time = nextArrival;
+                    }
+
+                    continue;
+                }
+
+
+                // Get the next process from the ready queue
+                int currentProcess = readyQueue.poll();
+
+
+                // Calculate the execution time for this quantum
+                int executionTime = Math.min(
+                        quantum,
+                        rtime[currentProcess]
+                );
+
+
+                // Store the beginning time of the execution
+                int startTime = time;
+
+
+                // Update the remaining execution time
+                rtime[currentProcess] -= executionTime;
+
+
+                // Move the CPU time forward
+                time += executionTime;
+
+
+                // Add the execution segment to the Gantt chart
+                output.append(
+                        "P"
+                                + (currentProcess + 1)
+                                + " : "
+                                + startTime
+                                + " -> "
+                                + time
+                                + "\n"
+                );
+
+
+                /*
+                 * Add processes that arrived while
+                 * the current process was executing.
+                 */
+                for (int i = 0; i < nbp; i++) {
+
+                    if (!added[i]
+                            && atime[i] <= time
+                            && rtime[i] > 0) {
+
+                        readyQueue.add(i);
+                        added[i] = true;
+                    }
+                }
+
+
+                /*
+                 * If the current process still has
+                 * remaining execution time, add it
+                 * back to the end of the queue.
+                 */
+                if (rtime[currentProcess] > 0) {
+
+                    readyQueue.add(currentProcess);
+
+                } else {
+
+                    // The process has finished execution
+                    completedProcesses++;
+                }
+            }
+
+
+            output.append("\n=======================\n");
+            output.append("All processes completed.\n");
+
+
+            // Display the final Gantt chart
+            resultArea.setText(output.toString());
+
+
+            // Display the result window
+            resultFrame.setVisible(true);
+        });
+
+
+        /*
+         * Fill the text fields when the user
+         * selects a process from the table.
+         */
+        table.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                int selectedRow = table.getSelectedRow();
+
+                if (selectedRow != -1) {
+
+                    // Get the selected process information
+                    textField.setText(
+                            model.getValueAt(selectedRow, 0).toString()
+                    );
+
+                    textField_1.setText(
+                            model.getValueAt(selectedRow, 1).toString()
+                    );
+
+                    textField_2.setText(
+                            model.getValueAt(selectedRow, 2).toString()
+                    );
+                }
+            }
+        });
+    }
 }
